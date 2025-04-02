@@ -1,4 +1,8 @@
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
 from app.repository.database import get_db
 
-# We can re-export the dependency directly
-db_dependency = get_db
+
+# Define db dependency - this is the correct format
+db_dependency = Depends(get_db)

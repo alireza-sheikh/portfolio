@@ -83,7 +83,7 @@ class PersonalInfo(PersonalInfoBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Education(BaseModel):
@@ -98,7 +98,7 @@ class Education(BaseModel):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Experience(BaseModel):
@@ -113,7 +113,7 @@ class Experience(BaseModel):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Skill(BaseModel):
@@ -125,7 +125,7 @@ class Skill(BaseModel):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ResumeResponse(BaseModel):
@@ -133,6 +133,6 @@ class ResumeResponse(BaseModel):
     education: List[Education] = []
     experience: List[Experience] = []
     skills: List[Skill] = []
-
     class Config:
-        orm_mode = True
+        from_attributes = True
+

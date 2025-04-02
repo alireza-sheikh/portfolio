@@ -1,9 +1,13 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from fastapi import Request
 
 from app.core.config import settings
-from app.api.routes import health
+from app.api.routes import health, articles, resume  # Import individual routers
+from app.repository.init_db import init_db
 
 # Create FastAPI instance
 app = FastAPI(
@@ -22,13 +26,27 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-# Include routers
-app.include_router(health.router, prefix=settings.API_V1_STR, tags=["health"])
+
+# Initialize database
+@app.on_event("startup")
+async def startup_event():
+    init_db()
+
+
+# Include routers directly
+app.include_router(health.router, prefix=settings.API_V1_STR)
+app.include_router(articles.router, prefix=settings.API_V1_STR)
+app.include_router(resume.router, prefix=settings.API_V1_STR)
 
 # Mount static files directory
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
+# Set up templates
+templates = Jinja2Templates(directory="frontend/templates")
 
-@app.get("/")
-async def root():
-    return {"message": "Welcome to my personal website API"}
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "title": "Personal Website"}
+    )
